@@ -1441,7 +1441,13 @@ if (document.getElementById('newMemberJurusan')) {
 //  GOOGLE SHEETS URL SETTINGS
 // ============================================================
 function loadSheetSettings() {
-  const url = localStorage.getItem(STORAGE_KEYS.sheetUrl) || '';
+  const defaultUrl = 'https://script.google.com/macros/s/AKfycbx9VoYTl-H_kjPDLoLhDU6agIKfO5Ge9CAna0_PFMPPs3X6n0saK6v3QwUjj4Wh/exec';
+  const url = localStorage.getItem(STORAGE_KEYS.sheetUrl) || defaultUrl;
+  
+  if (!localStorage.getItem(STORAGE_KEYS.sheetUrl)) {
+    localStorage.setItem(STORAGE_KEYS.sheetUrl, defaultUrl);
+  }
+  
   document.getElementById('sheetUrl').value = url;
   updateSheetStatus(!!url);
 }
@@ -1869,6 +1875,7 @@ function confirmClearData() {
 // ============================================================
 //  INIT
 // ============================================================
+loadSheetSettings();
 renderMembersDropdown();
 renderPending();
 updateAdminBadge();
