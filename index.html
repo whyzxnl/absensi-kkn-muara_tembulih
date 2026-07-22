@@ -1393,6 +1393,26 @@ function renderMembers() {
   renderMembersDropdown();
 }
 
+async function syncMembersFromSheets() {
+  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  if (!sheetUrl) return;
+
+  try {
+    const separator = sheetUrl.includes('?') ? '&' : '?';
+    const fetchUrl = `${sheetUrl}${separator}action=getMembers`;
+    const resp = await fetch(fetchUrl);
+    if (!resp.ok) return;
+    const data = await resp.json();
+    if (data && Array.isArray(data) && data.length > 0) {
+      saveMembers(data);
+      renderMembers();
+      renderMembersDropdown();
+    }
+  } catch (err) {
+    console.error('Failed to sync members from sheets:', err);
+  }
+}
+
 function addMember() {
   const inp = document.getElementById('newMemberName');
   const inpNPM = document.getElementById('newMemberNPM');
@@ -1412,14 +1432,43 @@ function addMember() {
   if (inpJur) inpJur.value = '';
   renderMembers();
   renderMembersDropdown();
+
+  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  if (sheetUrl) {
+    fetch(sheetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'addMember', name, npm, jurusan })
+    }).then(resp => resp.json()).then(res => {
+      if (res.status === 'success') {
+        syncMembersFromSheets();
+      } else {
+        alert(res.message || 'Gagal menyimpan ke Google Sheets');
+      }
+    }).catch(err => console.error('Failed to save member to sheets:', err));
+  }
 }
 
 function removeMember(i) {
   const members = getMembers();
+  const target = members[i];
+  if (!target) return;
+  if (!confirm(`Hapus anggota KKN ${target.name}?`)) return;
+
   members.splice(i, 1);
   saveMembers(members);
   renderMembers();
   renderMembersDropdown();
+
+  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  if (sheetUrl) {
+    fetch(sheetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'removeMember', name: target.name })
+    }).then(() => syncMembersFromSheets())
+      .catch(err => console.error('Failed to remove member from sheets:', err));
+  }
 }
 
 function clearAllMembers() {
@@ -1427,7 +1476,18 @@ function clearAllMembers() {
   saveMembers([]);
   renderMembers();
   renderMembersDropdown();
+
+  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  if (sheetUrl) {
+    fetch(sheetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'clearAllMembers' })
+    }).then(() => syncMembersFromSheets())
+      .catch(err => console.error('Failed to clear members in sheets:', err));
+  }
 }
+
 function loadDefaultMembers() {
   const defaults = [
     { name: 'Wahyu Zainal Mutakin', npm: '230201061', jurusan: 'Teknik Informatika' },
@@ -1454,7 +1514,20 @@ function loadDefaultMembers() {
   saveMembers(defaults);
   renderMembers();
   renderMembersDropdown();
-  alert('✅ 20 data anggota KKN berhasil dimuat ulang!');
+
+  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  if (sheetUrl) {
+    fetch(sheetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'loadDefaultMembers' })
+    }).then(() => {
+      syncMembersFromSheets();
+      alert('✅ 20 data anggota KKN berhasil dimuat ulang!');
+    }).catch(err => console.error('Failed to load default members in sheets:', err));
+  } else {
+    alert('✅ 20 data anggota KKN berhasil dimuat ulang!');
+  }
 }
 
 document.getElementById('newMemberName').addEventListener('keydown', e => {
@@ -1827,6 +1900,8 @@ async function syncFromSheets() {
       save(STORAGE_KEYS.records, data);
       renderTable();
       updateStats();
+      // Also sync members registry
+      await syncMembersFromSheets();
       alert(`✅ Sinkronisasi berhasil! ${data.length} data absensi dimuat dari Google Sheets.`);
     } else {
       throw new Error(data.message || 'Data tidak valid.');
@@ -1910,6 +1985,7 @@ function confirmClearData() {
 //  INIT
 // ============================================================
 loadSheetSettings();
+syncMembersFromSheets();
 renderMembersDropdown();
 renderPending();
 updateAdminBadge();
