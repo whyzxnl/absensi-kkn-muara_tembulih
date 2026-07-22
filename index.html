@@ -1328,7 +1328,31 @@ function showPage(id) {
 // ============================================================
 //  MEMBERS
 // ============================================================
-function getMembers() { return load(STORAGE_KEYS.members, []); }
+function getMembers() {
+  const defaults = [
+    { name: 'Wahyu Zainal Mutakin', npm: '230201061', jurusan: 'Teknik Informatika' },
+    { name: 'Muhamad Iqbal', npm: '240101222', jurusan: 'S1 Keperawatan' },
+    { name: 'Revani Sukma Dewi', npm: '240105011', jurusan: 'D3 Kebidanan' },
+    { name: 'Diesta Putri Marantika', npm: '240105005', jurusan: 'D3 Kebidanan' },
+    { name: 'Zenisa Auvin Naimah', npm: '230104029', jurusan: 'S1 Gizi' },
+    { name: 'Astri Berlian Putri Atriska', npm: '230104020', jurusan: 'S1 Gizi' },
+    { name: 'Amelia Al-Qoyyima Saputri', npm: '220104013', jurusan: 'S1 Gizi' },
+    { name: 'Adila Nailah Savina', npm: '230104046', jurusan: 'S1 Gizi' },
+    { name: 'Anisa Juspayana', npm: '230107009', jurusan: 'S1 Kebidanan' },
+    { name: 'Seliya Wati', npm: '230107001', jurusan: 'S1 Kebidanan' },
+    { name: 'Novita Widianti', npm: '230107095', jurusan: 'S1 Kebidanan' },
+    { name: 'Islati Arum Sheila', npm: '230107090', jurusan: 'S1 Kebidanan' },
+    { name: 'Vina Desita Sari', npm: '230107083', jurusan: 'S1 Kebidanan' },
+    { name: 'Keyzia Alferita', npm: '240101167', jurusan: 'S1 Keperawatan' },
+    { name: 'Helya Sari', npm: '240101251', jurusan: 'S1 Keperawatan' },
+    { name: 'Rahmah Ulya Azizah', npm: '240101189', jurusan: 'S1 Keperawatan' },
+    { name: 'Suci Inesa Putri', npm: '240101242', jurusan: 'S1 Keperawatan' },
+    { name: 'Sonya Nanda Aulia', npm: '240101072', jurusan: 'S1 Keperawatan' },
+    { name: 'Rahma Annisa', npm: '240101102', jurusan: 'S1 Keperawatan' },
+    { name: 'Evi Nur Halimah', npm: '240101078', jurusan: 'S1 Keperawatan' }
+  ];
+  return load(STORAGE_KEYS.members, defaults);
+}
 function saveMembers(m) { save(STORAGE_KEYS.members, m); }
 
 function renderMembersDropdown() {
@@ -1406,21 +1430,31 @@ function clearAllMembers() {
 }
 function loadDefaultMembers() {
   const defaults = [
-    { name: 'Ahmad Fauzi', npm: '2110101001', jurusan: 'Teknik Informatika' },
-    { name: 'Siti Nurhaliza', npm: '2110102002', jurusan: 'Sistem Informasi' },
-    { name: 'Budi Santoso', npm: '2110103003', jurusan: 'Manajemen' },
-    { name: 'Dewi Rahayu', npm: '2110104004', jurusan: 'Hukum' },
-    { name: 'Rizky Firmansyah', npm: '2110105005', jurusan: 'Teknik Sipil' },
-    { name: 'Nurul Hidayah', npm: '2110106006', jurusan: 'Akuntansi' },
-    { name: 'Muhammad Ilham', npm: '2110107007', jurusan: 'Pendidikan Matematika' },
-    { name: 'Putri Anggraini', npm: '2110108008', jurusan: 'Farmasi' },
-    { name: 'Eko Prasetyo', npm: '2110109009', jurusan: 'Agribisnis' },
-    { name: 'Layla Indah', npm: '2110110010', jurusan: 'Ilmu Komunikasi' }
+    { name: 'Wahyu Zainal Mutakin', npm: '230201061', jurusan: 'Teknik Informatika' },
+    { name: 'Muhamad Iqbal', npm: '240101222', jurusan: 'S1 Keperawatan' },
+    { name: 'Revani Sukma Dewi', npm: '240105011', jurusan: 'D3 Kebidanan' },
+    { name: 'Diesta Putri Marantika', npm: '240105005', jurusan: 'D3 Kebidanan' },
+    { name: 'Zenisa Auvin Naimah', npm: '230104029', jurusan: 'S1 Gizi' },
+    { name: 'Astri Berlian Putri Atriska', npm: '230104020', jurusan: 'S1 Gizi' },
+    { name: 'Amelia Al-Qoyyima Saputri', npm: '220104013', jurusan: 'S1 Gizi' },
+    { name: 'Adila Nailah Savina', npm: '230104046', jurusan: 'S1 Gizi' },
+    { name: 'Anisa Juspayana', npm: '230107009', jurusan: 'S1 Kebidanan' },
+    { name: 'Seliya Wati', npm: '230107001', jurusan: 'S1 Kebidanan' },
+    { name: 'Novita Widianti', npm: '230107095', jurusan: 'S1 Kebidanan' },
+    { name: 'Islati Arum Sheila', npm: '230107090', jurusan: 'S1 Kebidanan' },
+    { name: 'Vina Desita Sari', npm: '230107083', jurusan: 'S1 Kebidanan' },
+    { name: 'Keyzia Alferita', npm: '240101167', jurusan: 'S1 Keperawatan' },
+    { name: 'Helya Sari', npm: '240101251', jurusan: 'S1 Keperawatan' },
+    { name: 'Rahmah Ulya Azizah', npm: '240101189', jurusan: 'S1 Keperawatan' },
+    { name: 'Suci Inesa Putri', npm: '240101242', jurusan: 'S1 Keperawatan' },
+    { name: 'Sonya Nanda Aulia', npm: '240101072', jurusan: 'S1 Keperawatan' },
+    { name: 'Rahma Annisa', npm: '240101102', jurusan: 'S1 Keperawatan' },
+    { name: 'Evi Nur Halimah', npm: '240101078', jurusan: 'S1 Keperawatan' }
   ];
   saveMembers(defaults);
   renderMembers();
   renderMembersDropdown();
-  alert('✅ 10 anggota contoh berhasil ditambahkan! Silakan sesuaikan nama-namanya.');
+  alert('✅ 20 data anggota KKN berhasil dimuat ulang!');
 }
 
 document.getElementById('newMemberName').addEventListener('keydown', e => {
