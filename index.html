@@ -918,9 +918,14 @@
           <div>
             <div class="card-title">📋 Rekap Absensi</div>
           </div>
-          <button class="btn btn-export" onclick="requireAdminThenExport()" style="padding:10px 18px; font-size:0.82rem;">
-            🔒 Export Excel
-          </button>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-outline" id="syncBtn" onclick="syncFromSheets()" style="padding:10px 14px; font-size:0.82rem; display:flex; align-items:center; gap:6px;">
+              🔄 <span id="syncText">Sinkronkan</span>
+            </button>
+            <button class="btn btn-export" onclick="requireAdminThenExport()" style="padding:10px 18px; font-size:0.82rem;">
+              🔒 Export Excel
+            </button>
+          </div>
         </div>
 
         <!-- Filter -->
@@ -1750,6 +1755,48 @@ function formatTanggal(str) {
   if (!str) return '-';
   const [y, m, d] = str.split('-');
   return `${d} ${BULAN[parseInt(m)-1]} ${y}`;
+}
+
+// ============================================================
+//  SINKRONISASI DATA DARI GOOGLE SHEETS
+// ============================================================
+async function syncFromSheets() {
+  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  if (!sheetUrl) {
+    alert('Hubungkan Google Sheets di Pengaturan terlebih dahulu.');
+    return;
+  }
+
+  const btn = document.getElementById('syncBtn');
+  const txt = document.getElementById('syncText');
+  if (!btn || !txt) return;
+
+  btn.disabled = true;
+  txt.textContent = 'Menyinkronkan...';
+
+  try {
+    const separator = sheetUrl.includes('?') ? '&' : '?';
+    const fetchUrl = `${sheetUrl}${separator}action=getRecords`;
+
+    const resp = await fetch(fetchUrl);
+    if (!resp.ok) throw new Error('Respon server Google tidak sukses.');
+
+    const data = await resp.json();
+    if (data && Array.isArray(data)) {
+      // Overwrite local records with fetched records
+      save(STORAGE_KEYS.records, data);
+      renderTable();
+      updateStats();
+      alert(`✅ Sinkronisasi berhasil! ${data.length} data absensi dimuat dari Google Sheets.`);
+    } else {
+      throw new Error(data.message || 'Data tidak valid.');
+    }
+  } catch (err) {
+    alert(`❌ Gagal menyinkronkan data: ${err.message || err.toString()}`);
+  } finally {
+    btn.disabled = false;
+    txt.textContent = 'Sinkronkan';
+  }
 }
 
 // ============================================================
