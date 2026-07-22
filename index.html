@@ -954,38 +954,6 @@
     <!-- ===== PAGE: PENGATURAN ===== -->
     <section class="page" id="page-pengaturan">
 
-      <!-- Google Sheets Settings -->
-      <div class="card">
-        <div class="card-title">🔗 Koneksi Google Sheets</div>
-        <div class="card-subtitle">Sambungkan ke Google Sheets agar data absensi terkirim otomatis</div>
-
-        <div class="sheet-link-status" id="sheetStatus">
-          <div class="dot dot-disconnected" id="statusDot"></div>
-          <div class="status-info">
-            <strong id="statusText">Belum terhubung</strong>
-            <small id="statusSub">Masukkan URL Apps Script di bawah untuk menghubungkan</small>
-          </div>
-        </div>
-
-        <div class="alert alert-info">
-          ℹ️ Ikuti <strong>Panduan Setup Google Sheets</strong> di bawah ini untuk mendapatkan URL Apps Script, lalu tempel di sini.
-        </div>
-
-        <div class="form-group">
-          <label for="sheetUrl">URL Google Apps Script (Web App URL)</label>
-          <input type="url" class="form-input" id="sheetUrl"
-            placeholder="https://script.google.com/macros/s/XXXXXX/exec" />
-        </div>
-
-        <div style="display:flex; gap:10px;">
-          <button class="btn btn-primary" onclick="saveSheetUrl()" style="flex:1;">
-            💾 Simpan & Test Koneksi
-          </button>
-          <button class="btn btn-outline" onclick="clearSheetUrl()">
-            🗑️
-          </button>
-        </div>
-      </div>
 
       <!-- Daftar Anggota -->
       <div class="card">
@@ -1044,45 +1012,9 @@ Siti Nurhaliza | 2110102002 | Manajemen
         </div>
       </div>
 
-      <!-- Panduan -->
-      <div class="card">
-        <div class="card-title">📖 Panduan Setup Google Sheets</div>
-        <div class="card-subtitle">Ikuti langkah berikut untuk menghubungkan ke Google Sheets</div>
 
-        <div style="counter-reset: steps;">
-          <div class="alert alert-info" style="flex-direction:column; gap:6px;">
-            <strong>Langkah 1 – Buat Google Sheets Baru</strong>
-            <span>Buka <a href="https://sheets.google.com" target="_blank" style="color:var(--primary-light);">sheets.google.com</a> dan buat spreadsheet baru.</span>
-          </div>
-          <div class="alert alert-info" style="flex-direction:column; gap:6px;">
-            <strong>Langkah 2 – Buka Apps Script</strong>
-            <span>Di Google Sheets, klik menu <strong>Ekstensi → Apps Script</strong>.</span>
-          </div>
-          <div class="alert alert-info" style="flex-direction:column; gap:6px;">
-            <strong>Langkah 3 – Tempel Kode Script</strong>
-            <span>Hapus semua kode yang ada, lalu tempel kode dari file <code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px;">google_apps_script.gs</code> yang ada di folder ini.</span>
-          </div>
-          <div class="alert alert-info" style="flex-direction:column; gap:6px;">
-            <strong>Langkah 4 – Deploy sebagai Web App</strong>
-            <span>Klik <strong>Deploy → New Deployment → Web App</strong>. Set akses ke <strong>"Anyone"</strong>. Salin URL yang muncul.</span>
-          </div>
-          <div class="alert alert-info" style="flex-direction:column; gap:6px;">
-            <strong>Langkah 5 – Tempel URL di Pengaturan</strong>
-            <span>Tempel URL tersebut di kolom URL di atas dan klik <strong>Simpan & Test Koneksi</strong>.</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- Hapus Data -->
-      <div class="card">
-        <div class="card-title" style="color:var(--danger);">⚠️ Zona Berbahaya</div>
-        <p style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:16px;">
-          Tindakan berikut tidak dapat dibatalkan. Data yang dihapus tidak bisa dikembalikan.
-        </p>
-        <button class="btn btn-outline" onclick="confirmClearData()" style="border-color:rgba(255,82,82,0.4); color:var(--danger);">
-          🗑️ Hapus Semua Data Absensi
-        </button>
-      </div>
+
 
     </section>
   </main>
@@ -1279,6 +1211,8 @@ function importBulkNames() {
 //  CONSTANTS & CONFIG
 // ============================================================
 // ============================================================
+const APP_SHEET_URL = 'https://script.google.com/macros/s/AKfycbx9VoYVH6wTl-H_kjPDLoLhDU6agIKfO5Ge9CAna0_PFMPPs3X6n0saK6v3QwUjj4Wh/exec';
+
 const STORAGE_KEYS = {
   members:  'kkn_members',
   records:  'kkn_records',
@@ -1398,7 +1332,7 @@ function renderMembers() {
 }
 
 async function syncMembersFromSheets() {
-  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  const sheetUrl = APP_SHEET_URL;
   if (!sheetUrl) return;
 
   try {
@@ -1437,7 +1371,7 @@ function addMember() {
   renderMembers();
   renderMembersDropdown();
 
-  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  const sheetUrl = APP_SHEET_URL;
   if (sheetUrl) {
     fetch(sheetUrl, {
       method: 'POST',
@@ -1464,7 +1398,7 @@ function removeMember(i) {
   renderMembers();
   renderMembersDropdown();
 
-  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  const sheetUrl = APP_SHEET_URL;
   if (sheetUrl) {
     fetch(sheetUrl, {
       method: 'POST',
@@ -1481,7 +1415,7 @@ function clearAllMembers() {
   renderMembers();
   renderMembersDropdown();
 
-  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  const sheetUrl = APP_SHEET_URL;
   if (sheetUrl) {
     fetch(sheetUrl, {
       method: 'POST',
@@ -1519,7 +1453,7 @@ function loadDefaultMembers() {
   renderMembers();
   renderMembersDropdown();
 
-  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  const sheetUrl = APP_SHEET_URL;
   if (sheetUrl) {
     fetch(sheetUrl, {
       method: 'POST',
@@ -1549,80 +1483,6 @@ if (document.getElementById('newMemberJurusan')) {
 }
 
 // ============================================================
-//  GOOGLE SHEETS URL SETTINGS
-// ============================================================
-function loadSheetSettings() {
-  const brokenUrl = 'https://script.google.com/macros/s/AKfycbx9VoYTl-H_kjPDLoLhDU6agIKfO5Ge9CAna0_PFMPPs3X6n0saK6v3QwUjj4Wh/exec';
-  const correctUrl = 'https://script.google.com/macros/s/AKfycbx9VoYVH6wTl-H_kjPDLoLhDU6agIKfO5Ge9CAna0_PFMPPs3X6n0saK6v3QwUjj4Wh/exec';
-  let url = localStorage.getItem(STORAGE_KEYS.sheetUrl);
-  
-  // Auto-heal if the user cached the broken URL
-  if (!url || url === brokenUrl) {
-    url = correctUrl;
-    localStorage.setItem(STORAGE_KEYS.sheetUrl, correctUrl);
-  }
-  
-  document.getElementById('sheetUrl').value = url;
-  updateSheetStatus(!!url);
-}
-
-function updateSheetStatus(connected, msg) {
-  const dot  = document.getElementById('statusDot');
-  const text = document.getElementById('statusText');
-  const sub  = document.getElementById('statusSub');
-  if (connected) {
-    dot.className = 'dot dot-connected';
-    text.textContent = 'Terhubung ke Google Sheets';
-    sub.textContent = msg || 'Data absensi akan terkirim otomatis saat form disubmit.';
-  } else {
-    dot.className = 'dot dot-disconnected';
-    text.textContent = 'Belum terhubung';
-    sub.textContent = msg || 'Masukkan URL Apps Script di bawah untuk menghubungkan';
-  }
-}
-
-async function saveSheetUrl() {
-  const url = document.getElementById('sheetUrl').value.trim();
-  if (!url) { alert('Masukkan URL Apps Script terlebih dahulu.'); return; }
-  if (!url.includes('script.google.com')) {
-    alert('URL tidak valid. Harus berupa URL Google Apps Script.');
-    return;
-  }
-  localStorage.setItem(STORAGE_KEYS.sheetUrl, url);
-
-  // Test connection
-  updateSheetStatus(false, '⏳ Menguji koneksi...');
-  try {
-    const testPayload = { action: 'ping' };
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(testPayload),
-      signal: AbortSignal.timeout(8000),
-    });
-    const text = await resp.text();
-    let resJSON = {};
-    try { resJSON = JSON.parse(text); } catch (e) {}
-
-    if (resJSON.status === 'pong') {
-      updateSheetStatus(true, '✅ Koneksi berhasil! URL tersimpan.');
-    } else {
-      console.error('Ping failed:', text);
-      updateSheetStatus(false, '⚠️ Tersimpan, namun respons salah. Pastikan URL Apps Script benar.');
-    }
-  } catch {
-    updateSheetStatus(false, '⚠️ URL tersimpan, namun test koneksi gagal (Network Error).');
-  }
-}
-
-function clearSheetUrl() {
-  if (!confirm('Hapus URL koneksi Google Sheets?')) return;
-  localStorage.removeItem(STORAGE_KEYS.sheetUrl);
-  document.getElementById('sheetUrl').value = '';
-  updateSheetStatus(false);
-}
-
-// ============================================================
 //  ABSENSI FORM SUBMIT
 // ============================================================
 async function submitAbsensi(e) {
@@ -1646,7 +1506,7 @@ async function submitAbsensi(e) {
   }
   // Lookup NPM and Jurusan for the student
   const members = getMembers();
-  const student = members.find(m => m.name === name) || {};
+  const student = members.find(m => m.name === nama) || {};
   const npm = student.npm || '';
   const jurusan = student.jurusan || '';
 
@@ -1664,7 +1524,7 @@ async function submitAbsensi(e) {
   setLoading(true);
 
   // Try send to Google Sheets
-  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  const sheetUrl = APP_SHEET_URL;
   let sentToSheet = false;
 
   if (sheetUrl) {
@@ -1759,7 +1619,7 @@ function renderPending() {
 }
 
 async function retryPending() {
-  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  const sheetUrl = APP_SHEET_URL;
   if (!sheetUrl) { alert('Hubungkan Google Sheets di Pengaturan terlebih dahulu.'); return; }
 
   const pending = load(STORAGE_KEYS.pending, []);
@@ -1899,7 +1759,7 @@ function formatTanggal(str) {
 //  SINKRONISASI DATA DARI GOOGLE SHEETS
 // ============================================================
 async function syncFromSheets(silent = false) {
-  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  const sheetUrl = APP_SHEET_URL;
   if (!sheetUrl) {
     if (!silent) alert('Hubungkan Google Sheets di Pengaturan terlebih dahulu.');
     return;
@@ -1995,19 +1855,6 @@ function doExport(records) {
   XLSX.writeFile(wb, `Absensi_KKN_Muara_Tembulih_${today}.xlsx`);
 }
 
-// ============================================================
-//  CLEAR DATA
-// ============================================================
-function confirmClearData() {
-  if (!confirm('⚠️ PERINGATAN!\n\nSemua data absensi akan dihapus permanen.\nApakah Anda yakin?')) return;
-  if (!confirm('Konfirmasi sekali lagi: Hapus SEMUA data absensi?')) return;
-  localStorage.removeItem(STORAGE_KEYS.records);
-  localStorage.removeItem(STORAGE_KEYS.pending);
-  renderTable();
-  updateStats();
-  renderPending();
-  alert('✅ Semua data absensi telah dihapus.');
-}
 
 // ============================================================
 //  INIT
@@ -2028,7 +1875,7 @@ document.getElementById('tab-rekap').addEventListener('click', () => {
 
 // Auto-sync periodically every 15 seconds silently
 setInterval(() => {
-  if (localStorage.getItem(STORAGE_KEYS.sheetUrl)) {
+  if (APP_SHEET_URL) {
     syncFromSheets(true);
   }
 }, 15000);
