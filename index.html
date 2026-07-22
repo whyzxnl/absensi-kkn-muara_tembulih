@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Absensi KKN – Desa Muara Tembulih</title>
+  <meta name="description" content="Website absensi resmi mahasiswa KKN Universitas di Desa Muara Tembulih. Catat kehadiran harian secara mudah dan real-time." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+      <style>
+    /* ===== DESIGN TOKENS — WHITE PINK THEME ===== */
+    :root {
+      --primary:        #e91e8c;
+      --primary-light:  #f06292;
+      --primary-dark:   #c2185b;
+      --accent:         #9c27b0;
+      --accent-light:   #ce93d8;
+      --success:        #2e7d32;
+      --success-light:  #a5d6a7;
+      --warning:        #e65100;
+      --warning-light:  #ffcc80;
+      --danger:         #c62828;
+      --danger-light:   #ef9a9a;
+
+      --bg:        #fff0f6;
+      --bg-card:   #ffffff;
+      --bg-input:  #fff5f9;
+
+      --text-primary:   #2d1b2e;
+      --text-secondary: #7b4f72;
+      --text-muted:     #b07fa8;
+
+      --border:       #f3c6e0;
+      --border-focus: #e91e8c;
+
+      --radius-sm:  8px;
+      --radius-md:  14px;
+      --radius-lg:  20px;
+      --radius-xl:  28px;
+
+      --shadow-sm:   0 2px 8px rgba(233,30,140,0.08);
+      --shadow-card: 0 4px 24px rgba(233,30,140,0.10);
+      --shadow-btn:  0 4px 16px rgba(233,30,140,0.35);
+
+      --font: 'Outfit', sans-serif;
+      --font-display: 'Playfair Display', serif;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== ANIMATED BACKGROUND ===== */
+    .bg-animated {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 0% 0%,   #fce4ec 0%, transparent 60%),
+        radial-gradient(ellipse 70% 50% at 100% 100%, #f3e5f5 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 50% 50%,  #fce4ec 0%, transparent 70%),
+        #fff0f6;
+      overflow: hidden;
+    }
+
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      animation: float 10s ease-in-out infinite;
+    }
+    .bg-orb-1 { width: 500px; height: 500px; background: #f8bbd0; top: -150px; left: -100px; opacity: 0.5; animation-delay: 0s; }
+    .bg-orb-2 { width: 400px; height: 400px; background: #e1bee7; bottom: -100px; right: -80px; opacity: 0.45; animation-delay: 4s; }
+    .bg-orb-3 { width: 320px; height: 320px; background: #fce4ec; top: 40%; left: 40%; opacity: 0.35; animation-delay: 7s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(25px, -25px) scale(1.04); }
+      66%       { transform: translate(-15px, 15px) scale(0.97); }
+    }
+
+    /* ===== LAYOUT ===== */
+    .app {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 16px rgba(233,30,140,0.08);
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #f48fb1;
+      box-shadow: 0 0 0 3px #fce4ec, 0 4px 12px rgba(233,30,140,0.2);
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+    .logo-img:hover {
+      transform: scale(1.08) rotate(4deg);
+      box-shadow: 0 0 0 4px #f8bbd0, 0 8px 20px rgba(233,30,140,0.3);
+    }
+
+    .brand-text h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      font-family: var(--font-display);
+      background: linear-gradient(135deg, #c2185b, #e91e8c, #9c27b0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+    .brand-text span {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .header-clock { text-align: right; }
+    .clock-time {
+      font-size: 1.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #e91e8c, #9c27b0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .clock-date {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ===== NAV TABS ===== */
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      padding: 10px 24px;
+      background: rgba(255,255,255,0.9);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-tab {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font);
+      font-size: 0.84rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .nav-tab:hover {
+      background: #fce4ec;
+      color: var(--primary-dark);
+      border-color: #f8bbd0;
+    }
+    .nav-tab.active {
+      background: linear-gradient(135deg, #e91e8c, #c2185b);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: var(--shadow-btn);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    main {
+      flex: 1;
+      padding: 24px;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .page { display: none; animation: fadeIn 0.35s ease; }
+    .page.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== CARD ===== */
+    .card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #e91e8c, #f06292, #ce93d8, #9c27b0);
+    }
+
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 22px;
+    }
+
+    /* ===== FORM ===== */
+    .form-group { margin-bottom: 18px; }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 13px 15px;
+      background: var(--bg-input);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 0.95rem;
+      transition: var(--transition);
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(233,30,140,0.12);
+    }
+    .form-input::placeholder, .form-textarea::placeholder {
+      color: var(--text-muted);
+    }
+    .form-select option {
+      background: #fff;
+      color: var(--text-primary);
+    }
+    .form-textarea { resize: vertical; min-height: 90px; }
+
+    .select-wrapper { position: relative; }
+    .select-wrapper::after {
+      content: '▾';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* ===== STATUS OPTIONS ===== */
+    .status-options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .status-option { display: none; }
+
+    .status-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      padding: 14px 8px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      background: var(--bg-input);
+    }
+    .status-label:hover {
+      border-color: var(--primary-light);
+      background: #fce4ec;
+    }
+    .status-icon { font-size: 1.5rem; }
+    .status-text { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); }
+
+    .status-option:checked + .status-label[for="s-hadir"] { border-color: #2e7d32; background: #e8f5e9; }
+    .status-option:checked + .status-label[for="s-izin"]  { border-color: #e65100; background: #fff3e0; }
+    .status-option:checked + .status-label[for="s-sakit"] { border-color: #9c27b0; background: #f3e5f5; }
+    .status-option:checked + .status-label[for="s-alpha"] { border-color: #c62828; background: #ffebee; }
+
+    /* ===== BUTTON ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: var(--font);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      letter-spacing: 0.02em;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, #e91e8c, #c2185b);
+      color: #fff;
+      box-shadow: var(--shadow-btn);
+    }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(233,30,140,0.45);
+      background: linear-gradient(135deg, #f06292, #e91e8c);
+    }
+    .btn-primary:active:not(:disabled) { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-outline {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .btn-outline:hover { background: #fce4ec; border-color: var(--primary-light); color: var(--primary-dark); }
+
+    .btn-success {
+      background: linear-gradient(135deg, #2e7d32, #43a047);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(46,125,50,0.3);
+      font-weight: 700;
+    }
+
+    /* ===== SUCCESS OVERLAY ===== */
+    .success-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(252,228,236,0.75);
+      backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .success-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+
+    .success-icon {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e91e8c, #c2185b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      animation: bounceIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 0 50px rgba(233,30,140,0.4);
+    }
+    @keyframes bounceIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .success-title   { font-size: 1.6rem; font-weight: 800; color: var(--primary-dark); text-align: center; }
+    .success-subtitle { font-size: 0.9rem; color: var(--text-secondary); text-align: center; max-width: 300px; }
+
+    /* ===== STATS ===== */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .stat-hadir::before { background: #43a047; }
+    .stat-izin::before  { background: #fb8c00; }
+    .stat-sakit::before { background: #9c27b0; }
+    .stat-alpha::before { background: #e53935; }
+
+    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(233,30,140,0.12); }
+    .stat-icon  { font-size: 1.4rem; margin-bottom: 6px; }
+    .stat-count { font-size: 1.8rem; font-weight: 800; line-height: 1; }
+    .stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .stat-hadir .stat-count { color: #2e7d32; }
+    .stat-izin  .stat-count { color: #e65100; }
+    .stat-sakit .stat-count { color: #7b1fa2; }
+    .stat-alpha .stat-count { color: #c62828; }
+
+    /* ===== TABLE ===== */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    table { width: 100%; border-collapse: collapse; }
+
+    thead tr { background: linear-gradient(90deg, #fce4ec, #f3e5f5); }
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.73rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--primary-dark);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid #fce4ec;
+      vertical-align: middle;
+      color: var(--text-primary);
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr { transition: var(--transition); }
+    tbody tr:hover { background: #fff0f6; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .badge-hadir { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .badge-izin  { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+    .badge-sakit { background: #f3e5f5; color: #7b1fa2; border: 1px solid #ce93d8; }
+    .badge-alpha { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+    .empty-state-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.5; }
+    .empty-state p { font-size: 0.9rem; }
+
+    /* ===== FILTER ===== */
+    .filter-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .filter-row .form-input, .filter-row .form-select { flex: 1; min-width: 140px; padding: 10px 14px; }
+    .filter-row .select-wrapper { flex: 1; min-width: 140px; }
+
+    /* ===== SETTINGS ===== */
+    .settings-section { margin-bottom: 28px; }
+    .settings-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #fce4ec;
+    }
+
+    .member-list { display: flex; flex-direction: column; gap: 8px; }
+    .member-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+    .member-item:hover { background: #fce4ec; border-color: #f8bbd0; }
+
+    .member-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e91e8c, #9c27b0);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem; color: #fff;
+      flex-shrink: 0;
+    }
+    .member-info { flex: 1; }
+    .member-name { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+    .member-meta { font-size: 0.72rem; color: var(--text-secondary); margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .member-meta span {
+      background: #fce4ec;
+      border: 1px solid #f8bbd0;
+      border-radius: 10px;
+      padding: 1px 8px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    .member-remove {
+      background: none; border: none;
+      color: var(--text-muted); cursor: pointer;
+      font-size: 1.1rem; padding: 4px; border-radius: 4px;
+      transition: var(--transition);
+    }
+    .member-remove:hover { color: var(--danger); background: #ffebee; }
+
+    .add-member-row { display: flex; gap: 10px; }
+    .add-member-row .form-input { flex: 1; }
+    .add-member-row .btn { padding: 12px 20px; }
+
+    /* ===== BULK IMPORT ===== */
+    .bulk-import-box {
+      background: #fff5f9;
+      border: 1.5px dashed #f8bbd0;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-top: 14px;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .bulk-import-box.show { display: block; }
+    .bulk-import-label { font-size: 0.78rem; color: var(--primary-dark); margin-bottom: 8px; font-weight: 700; }
+    .bulk-counter { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
+    .btn-toggle-bulk {
+      background: #fce4ec;
+      border: 1.5px solid #f48fb1;
+      color: var(--primary-dark);
+      font-size: 0.82rem;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font);
+      font-weight: 700;
+      transition: var(--transition);
+      width: 100%;
+      margin-top: 10px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-toggle-bulk:hover { background: #f8bbd0; }
+
+    /* ===== SHEET STATUS ===== */
+    .sheet-link-status {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      margin-bottom: 14px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dot-connected    { background: #43a047; box-shadow: 0 0 8px #43a047; }
+    .dot-disconnected { background: #e53935; box-shadow: 0 0 8px #e53935; }
+    .status-info { flex: 1; }
+    .status-info strong { font-size: 0.85rem; color: var(--text-primary); }
+    .status-info small  { display: block; font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
+
+    /* ===== ALERT ===== */
+    .alert {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 13px 15px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem; line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .alert-info    { background: #fce4ec; border: 1px solid #f8bbd0; color: var(--primary-dark); }
+    .alert-warning { background: #fff3e0; border: 1px solid #ffcc80; color: #e65100; }
+
+    .btn-export {
+      background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+      color: #fff;
+      font-weight: 700;
+      padding: 10px 18px;
+      box-shadow: 0 4px 14px rgba(156,39,176,0.3);
+      border: none;
+    }
+    .btn-export:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(156,39,176,0.4); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      header { padding: 10px 16px; }
+      .nav-tabs { padding: 8px 16px; }
+      main { padding: 16px; }
+      .card { padding: 18px 16px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .status-options { grid-template-columns: repeat(2, 1fr); }
+      .clock-time { font-size: 1.35rem; }
+      .brand-text h1 { font-size: 0.88rem; }
+    }
+
+    /* ===== SPINNER ===== */
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .spinner.show { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== PENDING BADGE ===== */
+    .pending-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      background: #fff3e0;
+      border: 1px solid #ffcc80;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      color: #e65100;
+      font-weight: 600;
+    }
+
+    /* ===== ADMIN MODAL ===== */
+    .admin-modal-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(252,228,236,0.7);
+      backdrop-filter: blur(16px);
+      display: none; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .admin-modal-overlay.show { display: flex; animation: fadeIn 0.25s ease; }
+
+    .admin-modal {
+      background: #fff;
+      border: 1.5px solid #f8bbd0;
+      border-radius: var(--radius-xl);
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 8px 48px rgba(233,30,140,0.2);
+      text-align: center;
+      animation: bounceIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .admin-lock-icon {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fce4ec, #f3e5f5);
+      border: 2px solid #f48fb1;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 20px;
+    }
+    .admin-modal h2 {
+      font-size: 1.3rem; font-weight: 800; margin-bottom: 6px;
+      background: linear-gradient(135deg, #c2185b, #e91e8c, #9c27b0);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .admin-modal p { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 22px; }
+
+    .admin-pass-input {
+      width: 100%; padding: 14px 18px;
+      background: var(--bg-input);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font); font-size: 1.1rem;
+      text-align: center; letter-spacing: 0.1em;
+      outline: none; transition: var(--transition);
+      margin-bottom: 14px;
+    }
+    .admin-pass-input:focus {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(233,30,140,0.12);
+    }
+    .admin-pass-input.error {
+      border-color: var(--danger);
+      background: #ffebee;
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%,100%{ transform: translateX(0); }
+      20%    { transform: translateX(-8px); }
+      40%    { transform: translateX(8px); }
+      60%    { transform: translateX(-5px); }
+      80%    { transform: translateX(5px); }
+    }
+    .admin-error-msg { font-size: 0.78rem; color: var(--danger); margin-bottom: 12px; min-height: 18px; }
+    .admin-modal-buttons { display: flex; gap: 10px; }
+
+    /* ===== ADMIN BADGE ===== */
+    .admin-badge {
+      display: none; align-items: center; gap: 6px;
+      padding: 5px 12px;
+      background: #fce4ec;
+      border: 1px solid #f48fb1;
+      border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--primary-dark);
+      cursor: pointer; transition: var(--transition);
+    }
+    .admin-badge.show { display: flex; }
+    .admin-badge:hover { background: #ffebee; border-color: #ef9a9a; color: var(--danger); }
+
+    .lock-indicator { font-size: 0.72rem; opacity: 0.6; }
+  </style>
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="bg-animated">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+</div>
+
+<!-- App Shell -->
+<div class="app">
+
+  <!-- Header -->
+  <header>
+    <div class="header-brand">
+      <img src="logo.jpg" alt="Logo KKN" class="logo-img" />
+      <div class="brand-text">
+        <h1>Absensi KKN</h1>
+        <span>Desa Muara Tembulih · Universitas Aisyah Pringsewu</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div class="admin-badge" id="adminBadge" onclick="logoutAdmin()" title="Klik untuk logout admin">
+        🛡️ Admin &nbsp;<span style="font-size:0.65rem; opacity:0.7;">(Logout)</span>
+      </div>
+      <div class="header-clock">
+        <div class="clock-time" id="clockTime">00:00:00</div>
+        <div class="clock-date" id="clockDate">Senin, 1 Januari 2025</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Nav Tabs -->
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('absensi')" id="tab-absensi">
+      ✏️ <span>Absensi</span>
+    </button>
+    <button class="nav-tab" onclick="showPage('rekap')" id="tab-rekap">
+      📋 <span>Rekap</span>
+    </button>
+    <button class="nav-tab" onclick="requireAdminThenPage('pengaturan')" id="tab-pengaturan">
+      ⚙️ <span>Pengaturan</span> <span class="lock-indicator" id="lockIconPengaturan">🔒</span>
+    </button>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- ===== PAGE: ABSENSI ===== -->
+    <section class="page active" id="page-absensi">
+
+      <div class="card">
+        <div class="card-title">✏️ Form Absensi Harian</div>
+        <div class="card-subtitle" id="tanggalHariIni">Hari ini: –</div>
+
+        <form id="absensiForm" onsubmit="submitAbsensi(event)">
+
+          <div class="form-group">
+            <label for="selectNama">Nama Mahasiswa</label>
+            <div class="select-wrapper">
+              <select class="form-select" id="selectNama" required>
+                <option value="">— Pilih nama Anda —</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Status Kehadiran</label>
+            <div class="status-options">
+              <div>
+                <input type="radio" name="status" id="s-hadir" class="status-option" value="Hadir" required />
+                <label class="status-label" for="s-hadir">
+                  <span class="status-icon">✅</span>
+                  <span class="status-text">Hadir</span>
+                </label>
+              </div>
+              <div>
+                <input type="radio" name="status" id="s-izin" class="status-option" value="Izin" />
+                <label class="status-label" for="s-izin">
+                  <span class="status-icon">📋</span>
+                  <span class="status-text">Izin</span>
+                </label>
+              </div>
+              <div>
+                <input type="radio" name="status" id="s-sakit" class="status-option" value="Sakit" />
+                <label class="status-label" for="s-sakit">
+                  <span class="status-icon">🤒</span>
+                  <span class="status-text">Sakit</span>
+                </label>
+              </div>
+              <div>
+                <input type="radio" name="status" id="s-alpha" class="status-option" value="Alpha" />
+                <label class="status-label" for="s-alpha">
+                  <span class="status-icon">❌</span>
+                  <span class="status-text">Alpha</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="kegiatan">Kegiatan Hari Ini (Opsional)</label>
+            <textarea class="form-textarea" id="kegiatan" placeholder="Contoh: Mengajar anak-anak TPA, gotong royong, survei jalan..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <div class="spinner" id="submitSpinner"></div>
+            <span id="submitText">🚀 Kirim Absensi</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Pending offline -->
+      <div id="pendingCard" class="card" style="display:none;">
+        <div class="card-title">⏳ Absensi Tertunda</div>
+        <p style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:14px;">
+          Data di bawah belum terkirim ke Google Sheets (mungkin karena belum dikonfigurasi atau offline).
+          Data tetap tersimpan di perangkat ini.
+        </p>
+        <div id="pendingList"></div>
+        <button class="btn btn-outline" style="margin-top:12px; width:100%;" onclick="retryPending()">
+          🔄 Coba Kirim Ulang
+        </button>
+      </div>
+    </section>
+
+    <!-- ===== PAGE: REKAP ===== -->
+    <section class="page" id="page-rekap">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card stat-hadir">
+          <div class="stat-icon">✅</div>
+          <div class="stat-count" id="statHadir">0</div>
+          <div class="stat-label">Hadir</div>
+        </div>
+        <div class="stat-card stat-izin">
+          <div class="stat-icon">📋</div>
+          <div class="stat-count" id="statIzin">0</div>
+          <div class="stat-label">Izin</div>
+        </div>
+        <div class="stat-card stat-sakit">
+          <div class="stat-icon">🤒</div>
+          <div class="stat-count" id="statSakit">0</div>
+          <div class="stat-label">Sakit</div>
+        </div>
+        <div class="stat-card stat-alpha">
+          <div class="stat-icon">❌</div>
+          <div class="stat-count" id="statAlpha">0</div>
+          <div class="stat-label">Alpha</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:gap:10px;">
+          <div>
+            <div class="card-title">📋 Rekap Absensi</div>
+          </div>
+          <button class="btn btn-export" onclick="requireAdminThenExport()" style="padding:10px 18px; font-size:0.82rem;">
+            🔒 Export Excel
+          </button>
+        </div>
+
+        <!-- Filter -->
+        <div class="filter-row">
+          <input type="date" class="form-input" id="filterTanggal" onchange="renderTable()" />
+          <div class="select-wrapper">
+            <select class="form-select" id="filterStatus" onchange="renderTable()">
+              <option value="">Semua Status</option>
+              <option value="Hadir">Hadir</option>
+              <option value="Izin">Izin</option>
+              <option value="Sakit">Sakit</option>
+              <option value="Alpha">Alpha</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrapper" id="tableWrapper">
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <p>Belum ada data absensi.<br>Mulai absensi dari tab <strong>Absensi</strong>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PAGE: PENGATURAN ===== -->
+    <section class="page" id="page-pengaturan">
+
+      <!-- Google Sheets Settings -->
+      <div class="card">
+        <div class="card-title">🔗 Koneksi Google Sheets</div>
+        <div class="card-subtitle">Sambungkan ke Google Sheets agar data absensi terkirim otomatis</div>
+
+        <div class="sheet-link-status" id="sheetStatus">
+          <div class="dot dot-disconnected" id="statusDot"></div>
+          <div class="status-info">
+            <strong id="statusText">Belum terhubung</strong>
+            <small id="statusSub">Masukkan URL Apps Script di bawah untuk menghubungkan</small>
+          </div>
+        </div>
+
+        <div class="alert alert-info">
+          ℹ️ Ikuti <strong>Panduan Setup Google Sheets</strong> di bawah ini untuk mendapatkan URL Apps Script, lalu tempel di sini.
+        </div>
+
+        <div class="form-group">
+          <label for="sheetUrl">URL Google Apps Script (Web App URL)</label>
+          <input type="url" class="form-input" id="sheetUrl"
+            placeholder="https://script.google.com/macros/s/XXXXXX/exec" />
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-primary" onclick="saveSheetUrl()" style="flex:1;">
+            💾 Simpan & Test Koneksi
+          </button>
+          <button class="btn btn-outline" onclick="clearSheetUrl()">
+            🗑️
+          </button>
+        </div>
+      </div>
+
+      <!-- Daftar Anggota -->
+      <div class="card">
+        <div class="card-title">👥 Daftar Anggota KKN</div>
+        <div class="card-subtitle">Tambahkan nama mahasiswa yang akan absen</div>
+
+        <div class="member-list" id="memberList">
+          <!-- Dinamis -->
+        </div>
+
+        <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px;">
+          <input type="text" class="form-input" id="newMemberName" placeholder="Nama lengkap mahasiswa..." />
+          <div style="display:flex; gap:8px;">
+            <input type="text" class="form-input" id="newMemberNPM" placeholder="NPM (misal: 2110101001)" />
+            <input type="text" class="form-input" id="newMemberJurusan" placeholder="Prodi/Jurusan" />
+          </div>
+          <button class="btn btn-primary" onclick="addMember()">
+            ➕ Tambah Anggota
+          </button>
+        </div>
+
+        <button class="btn-toggle-bulk" onclick="toggleBulkImport()" id="btnToggleBulk">
+          📋 Import Banyak Anggota Sekaligus
+        </button>
+
+        <div class="bulk-import-box" id="bulkImportBox">
+          <div class="bulk-import-label">✍️ Format: <code>Nama | NPM | Prodi</code> — satu anggota per baris:</div>
+          <textarea
+            class="form-textarea"
+            id="bulkNamesInput"
+            placeholder="Contoh:
+Ahmad Fauzi | 2110101001 | Teknik Informatika
+Siti Nurhaliza | 2110102002 | Manajemen
+..."
+            oninput="updateBulkCounter()"
+            style="min-height:180px; font-size:0.85rem; font-family:monospace;"
+          ></textarea>
+          <div class="bulk-counter" id="bulkCounter">0 anggota terdeteksi</div>
+          <div style="display:flex; gap:10px; margin-top:12px;">
+            <button class="btn btn-primary" onclick="importBulkNames()" style="flex:1;">
+              ✅ Import Semua Anggota
+            </button>
+            <button class="btn btn-outline" onclick="toggleBulkImport()" style="padding:12px 16px;">
+              Batal
+            </button>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <button class="btn btn-outline" onclick="loadDefaultMembers()" style="flex:1; font-size:0.82rem;">
+            📋 Load Contoh Data
+          </button>
+          <button class="btn btn-outline" onclick="clearAllMembers()" style="flex:1; font-size:0.82rem; border-color:rgba(255,82,82,0.4); color:var(--danger);">
+            🗑️ Hapus Semua
+          </button>
+        </div>
+      </div>
+
+      <!-- Panduan -->
+      <div class="card">
+        <div class="card-title">📖 Panduan Setup Google Sheets</div>
+        <div class="card-subtitle">Ikuti langkah berikut untuk menghubungkan ke Google Sheets</div>
+
+        <div style="counter-reset: steps;">
+          <div class="alert alert-info" style="flex-direction:column; gap:6px;">
+            <strong>Langkah 1 – Buat Google Sheets Baru</strong>
+            <span>Buka <a href="https://sheets.google.com" target="_blank" style="color:var(--primary-light);">sheets.google.com</a> dan buat spreadsheet baru.</span>
+          </div>
+          <div class="alert alert-info" style="flex-direction:column; gap:6px;">
+            <strong>Langkah 2 – Buka Apps Script</strong>
+            <span>Di Google Sheets, klik menu <strong>Ekstensi → Apps Script</strong>.</span>
+          </div>
+          <div class="alert alert-info" style="flex-direction:column; gap:6px;">
+            <strong>Langkah 3 – Tempel Kode Script</strong>
+            <span>Hapus semua kode yang ada, lalu tempel kode dari file <code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px;">google_apps_script.gs</code> yang ada di folder ini.</span>
+          </div>
+          <div class="alert alert-info" style="flex-direction:column; gap:6px;">
+            <strong>Langkah 4 – Deploy sebagai Web App</strong>
+            <span>Klik <strong>Deploy → New Deployment → Web App</strong>. Set akses ke <strong>"Anyone"</strong>. Salin URL yang muncul.</span>
+          </div>
+          <div class="alert alert-info" style="flex-direction:column; gap:6px;">
+            <strong>Langkah 5 – Tempel URL di Pengaturan</strong>
+            <span>Tempel URL tersebut di kolom URL di atas dan klik <strong>Simpan & Test Koneksi</strong>.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hapus Data -->
+      <div class="card">
+        <div class="card-title" style="color:var(--danger);">⚠️ Zona Berbahaya</div>
+        <p style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:16px;">
+          Tindakan berikut tidak dapat dibatalkan. Data yang dihapus tidak bisa dikembalikan.
+        </p>
+        <button class="btn btn-outline" onclick="confirmClearData()" style="border-color:rgba(255,82,82,0.4); color:var(--danger);">
+          🗑️ Hapus Semua Data Absensi
+        </button>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<!-- Success Overlay -->
+<div class="success-overlay" id="successOverlay" onclick="hideSuccess()">
+  <div class="success-icon">✅</div>
+  <div class="success-title">Absensi Berhasil!</div>
+  <div class="success-subtitle" id="successDetail">Data telah terkirim ke Google Sheets.</div>
+  <button class="btn btn-success" onclick="hideSuccess()" style="margin-top:8px;">OK, Lanjutkan</button>
+</div>
+
+<script>
+// ============================================================
+//  ADMIN PIN SYSTEM & SESSION STATE
+// ============================================================
+let _adminSession = sessionStorage.getItem('_adminSession') === 'true';
+let _adminCallback = null;
+
+function getAdminPass() {
+  return localStorage.getItem('_adminPin') || 'admin123';
+}
+
+function isAdmin() {
+  return _adminSession;
+}
+
+function requireAdminThenPage(page) {
+  if (isAdmin()) {
+    showPage(page);
+  } else {
+    openAdminModal(function() {
+      showPage(page);
+    });
+  }
+}
+
+function requireAdminThenExport() {
+  if (isAdmin()) {
+    exportExcel();
+  } else {
+    openAdminModal(function() {
+      exportExcel();
+    });
+  }
+}
+
+function openAdminModal(onSuccess) {
+  _adminCallback = onSuccess;
+  const modal = document.getElementById('adminModal');
+  const input = document.getElementById('adminPassInput');
+  const err = document.getElementById('adminErrorMsg');
+  if (input) input.value = '';
+  if (err) err.textContent = '';
+  if (modal) modal.classList.add('show');
+  setTimeout(() => { if(input) input.focus(); }, 100);
+}
+
+function closeAdminModal() {
+  const modal = document.getElementById('adminModal');
+  if (modal) modal.classList.remove('show');
+  _adminCallback = null;
+}
+
+function verifyAdmin() {
+  const input = document.getElementById('adminPassInput');
+  const err = document.getElementById('adminErrorMsg');
+  const pin = input ? input.value : '';
+  
+  if (pin === getAdminPass()) {
+    _adminSession = true;
+    sessionStorage.setItem('_adminSession', 'true');
+    updateAdminBadge();
+    closeAdminModal();
+    if (_adminCallback) {
+      _adminCallback();
+    }
+  } else {
+    if (input) {
+      input.classList.add('error');
+      setTimeout(() => input.classList.remove('error'), 400);
+    }
+    if (err) err.textContent = 'PIN Admin salah!';
+  }
+}
+
+function logoutAdmin() {
+  _adminSession = false;
+  sessionStorage.removeItem('_adminSession');
+  updateAdminBadge();
+  alert('Anda telah logout sebagai Admin.');
+  showPage('absensi');
+}
+
+function updateAdminBadge() {
+  const badge = document.getElementById('adminBadge');
+  const lockIcon = document.getElementById('lockIconPengaturan');
+  if (badge) {
+    if (_adminSession) {
+      badge.classList.add('show');
+    } else {
+      badge.classList.remove('show');
+    }
+  }
+  if (lockIcon) {
+    lockIcon.style.display = _adminSession ? 'none' : 'inline';
+  }
+}
+
+function changeAdminPass() {
+  const oldPin = prompt('Masukkan PIN Admin saat ini:');
+  if (oldPin === null) return;
+  if (oldPin !== getAdminPass()) {
+    alert('PIN saat ini salah!');
+    return;
+  }
+  const newPin = prompt('Masukkan PIN Admin baru (min. 4 karakter):');
+  if (!newPin) return;
+  if (newPin.trim().length < 4) {
+    alert('PIN baru terlalu pendek!');
+    return;
+  }
+  localStorage.setItem('_adminPin', newPin.trim());
+  alert('PIN Admin berhasil diubah!');
+}
+
+// ============================================================
+//  BULK IMPORT MEMBERS FUNCTIONS
+// ============================================================
+function toggleBulkImport() {
+  const box = document.getElementById('bulkImportBox');
+  if (box) {
+    if (box.style.display === 'block') {
+      box.style.display = 'none';
+    } else {
+      box.style.display = 'block';
+      document.getElementById('bulkNamesInput').focus();
+    }
+  }
+}
+
+function updateBulkCounter() {
+  const input = document.getElementById('bulkNamesInput');
+  const counter = document.getElementById('bulkCounter');
+  if (!input || !counter) return;
+  const lines = input.value.split('\n').filter(line => line.trim().length > 0);
+  counter.textContent = lines.length + ' anggota terdeteksi';
+}
+
+function importBulkNames() {
+  const input = document.getElementById('bulkNamesInput');
+  if (!input) return;
+  const text = input.value;
+  const lines = text.split('\n').filter(line => line.trim().length > 0);
+  
+  if (lines.length === 0) {
+    alert('Tidak ada nama yang dimasukkan!');
+    return;
+  }
+  
+  const members = getMembers();
+  let added = 0;
+  lines.forEach(line => {
+    const parts = line.split('|');
+    const name = parts[0] ? parts[0].trim() : '';
+    const npm = parts[1] ? parts[1].trim() : '';
+    const jurusan = parts[2] ? parts[2].trim() : '';
+    
+    if (name) {
+      // Check if already exists by name
+      const exists = members.some(m => m.name.toLowerCase() === name.toLowerCase());
+      if (!exists) {
+        members.push({ name, npm, jurusan });
+        added++;
+      }
+    }
+  });
+  
+  if (added > 0) {
+    saveMembers(members);
+    renderMembers();
+    renderMembersDropdown();
+    alert('Berhasil mengimpor ' + added + ' anggota baru!');
+    input.value = '';
+    updateBulkCounter();
+    toggleBulkImport();
+  } else {
+    alert('Semua nama yang dimasukkan sudah ada di daftar!');
+  }
+}
+
+// ============================================================
+//  CONSTANTS & CONFIG
+// ============================================================
+// ============================================================
+const STORAGE_KEYS = {
+  members:  'kkn_members',
+  records:  'kkn_records',
+  pending:  'kkn_pending',
+  sheetUrl: 'kkn_sheet_url',
+};
+
+const HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+// ============================================================
+//  STORAGE HELPERS
+// ============================================================
+const load  = (k, def) => { try { return JSON.parse(localStorage.getItem(k)) ?? def; } catch { return def; } };
+const save  = (k, v)   => localStorage.setItem(k, JSON.stringify(v));
+
+// ============================================================
+//  CLOCK
+// ============================================================
+function updateClock() {
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  const ss = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('clockTime').textContent = `${hh}:${mm}:${ss}`;
+  document.getElementById('clockDate').textContent =
+    `${HARI[now.getDay()]}, ${now.getDate()} ${BULAN[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('tanggalHariIni').textContent =
+    `Hari ini: ${HARI[now.getDay()]}, ${now.getDate()} ${BULAN[now.getMonth()]} ${now.getFullYear()}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ============================================================
+//  NAV TABS
+// ============================================================
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+
+  if (id === 'rekap') { renderTable(); updateStats(); }
+  if (id === 'pengaturan') { renderMembers(); loadSheetSettings(); }
+}
+
+// ============================================================
+//  MEMBERS
+// ============================================================
+function getMembers() { return load(STORAGE_KEYS.members, []); }
+function saveMembers(m) { save(STORAGE_KEYS.members, m); }
+
+function renderMembersDropdown() {
+  const sel = document.getElementById('selectNama');
+  const members = getMembers();
+  sel.innerHTML = '<option value="">— Pilih nama Anda —</option>';
+  members.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m.name;
+    const npmStr = m.npm ? ` - ${m.npm}` : '';
+    const jStr = m.jurusan ? ` (${m.jurusan})` : '';
+    opt.textContent = `${m.name}${npmStr}${jStr}`;
+    sel.appendChild(opt);
+  });
+}
+
+function renderMembers() {
+  const members = getMembers();
+  const list = document.getElementById('memberList');
+  if (!members.length) {
+    list.innerHTML = '<div style="color:var(--text-muted); font-size:0.82rem; padding:8px 0;">Belum ada anggota. Tambahkan di bawah.</div>';
+    return;
+  }
+  list.innerHTML = members.map((m, i) => {
+    const npmStr = m.npm ? `<span>NPM: ${m.npm}</span>` : '';
+    const jStr = m.jurusan ? `<span>Prodi: ${m.jurusan}</span>` : '';
+    const meta = (npmStr || jStr) ? `<div class="member-meta">${npmStr} ${jStr}</div>` : '';
+    return `
+      <div class="member-item">
+        <div class="member-avatar">${m.name.charAt(0).toUpperCase()}</div>
+        <div class="member-info">
+          <div class="member-name">${m.name}</div>
+          ${meta}
+        </div>
+        <button class="member-remove" onclick="removeMember(${i})" title="Hapus">✕</button>
+      </div>`;
+  }).join('');
+  renderMembersDropdown();
+}
+
+function addMember() {
+  const inp = document.getElementById('newMemberName');
+  const inpNPM = document.getElementById('newMemberNPM');
+  const inpJur = document.getElementById('newMemberJurusan');
+  const name = inp.value.trim();
+  const npm = inpNPM ? inpNPM.value.trim() : '';
+  const jurusan = inpJur ? inpJur.value.trim() : '';
+  
+  if (!name) return;
+  const members = getMembers();
+  if (members.some(m => m.name.toLowerCase() === name.toLowerCase())) { alert('Nama sudah ada!'); return; }
+  
+  members.push({ name, npm, jurusan });
+  saveMembers(members);
+  inp.value = '';
+  if (inpNPM) inpNPM.value = '';
+  if (inpJur) inpJur.value = '';
+  renderMembers();
+  renderMembersDropdown();
+}
+
+function removeMember(i) {
+  const members = getMembers();
+  members.splice(i, 1);
+  saveMembers(members);
+  renderMembers();
+  renderMembersDropdown();
+}
+
+function clearAllMembers() {
+  if (!confirm('Hapus semua anggota KKN?')) return;
+  saveMembers([]);
+  renderMembers();
+  renderMembersDropdown();
+}
+function loadDefaultMembers() {
+  const defaults = [
+    { name: 'Ahmad Fauzi', npm: '2110101001', jurusan: 'Teknik Informatika' },
+    { name: 'Siti Nurhaliza', npm: '2110102002', jurusan: 'Sistem Informasi' },
+    { name: 'Budi Santoso', npm: '2110103003', jurusan: 'Manajemen' },
+    { name: 'Dewi Rahayu', npm: '2110104004', jurusan: 'Hukum' },
+    { name: 'Rizky Firmansyah', npm: '2110105005', jurusan: 'Teknik Sipil' },
+    { name: 'Nurul Hidayah', npm: '2110106006', jurusan: 'Akuntansi' },
+    { name: 'Muhammad Ilham', npm: '2110107007', jurusan: 'Pendidikan Matematika' },
+    { name: 'Putri Anggraini', npm: '2110108008', jurusan: 'Farmasi' },
+    { name: 'Eko Prasetyo', npm: '2110109009', jurusan: 'Agribisnis' },
+    { name: 'Layla Indah', npm: '2110110010', jurusan: 'Ilmu Komunikasi' }
+  ];
+  saveMembers(defaults);
+  renderMembers();
+  renderMembersDropdown();
+  alert('✅ 10 anggota contoh berhasil ditambahkan! Silakan sesuaikan nama-namanya.');
+}
+
+document.getElementById('newMemberName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); addMember(); }
+});
+if (document.getElementById('newMemberNPM')) {
+  document.getElementById('newMemberNPM').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); addMember(); }
+  });
+}
+if (document.getElementById('newMemberJurusan')) {
+  document.getElementById('newMemberJurusan').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); addMember(); }
+  });
+}
+
+// ============================================================
+//  GOOGLE SHEETS URL SETTINGS
+// ============================================================
+function loadSheetSettings() {
+  const url = localStorage.getItem(STORAGE_KEYS.sheetUrl) || '';
+  document.getElementById('sheetUrl').value = url;
+  updateSheetStatus(!!url);
+}
+
+function updateSheetStatus(connected, msg) {
+  const dot  = document.getElementById('statusDot');
+  const text = document.getElementById('statusText');
+  const sub  = document.getElementById('statusSub');
+  if (connected) {
+    dot.className = 'dot dot-connected';
+    text.textContent = 'Terhubung ke Google Sheets';
+    sub.textContent = msg || 'Data absensi akan terkirim otomatis saat form disubmit.';
+  } else {
+    dot.className = 'dot dot-disconnected';
+    text.textContent = 'Belum terhubung';
+    sub.textContent = msg || 'Masukkan URL Apps Script di bawah untuk menghubungkan';
+  }
+}
+
+async function saveSheetUrl() {
+  const url = document.getElementById('sheetUrl').value.trim();
+  if (!url) { alert('Masukkan URL Apps Script terlebih dahulu.'); return; }
+  if (!url.includes('script.google.com')) {
+    alert('URL tidak valid. Harus berupa URL Google Apps Script.');
+    return;
+  }
+  localStorage.setItem(STORAGE_KEYS.sheetUrl, url);
+
+  // Test connection
+  updateSheetStatus(false, '⏳ Menguji koneksi...');
+  try {
+    const testPayload = { action: 'ping' };
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(testPayload),
+      signal: AbortSignal.timeout(8000),
+    });
+    const text = await resp.text();
+    if (text.includes('pong') || resp.ok) {
+      updateSheetStatus(true, '✅ Koneksi berhasil! URL tersimpan.');
+    } else {
+      updateSheetStatus(true, '⚠️ Tersimpan. Respons tidak terduga, cek script Anda.');
+    }
+  } catch {
+    updateSheetStatus(true, '⚠️ URL tersimpan, namun test koneksi gagal. Coba submit absensi.');
+  }
+}
+
+function clearSheetUrl() {
+  if (!confirm('Hapus URL koneksi Google Sheets?')) return;
+  localStorage.removeItem(STORAGE_KEYS.sheetUrl);
+  document.getElementById('sheetUrl').value = '';
+  updateSheetStatus(false);
+}
+
+// ============================================================
+//  ABSENSI FORM SUBMIT
+// ============================================================
+async function submitAbsensi(e) {
+  e.preventDefault();
+
+  const nama    = document.getElementById('selectNama').value;
+  const status  = document.querySelector('input[name="status"]:checked')?.value;
+  const kegiatan = document.getElementById('kegiatan').value.trim();
+
+  if (!nama || !status) {
+    alert('Harap pilih nama dan status kehadiran.');
+    return;
+  }
+
+  // Check already submitted today
+  const today = getTodayStr();
+  const records = getRecords();
+  const alreadySubmitted = records.some(r => r.tanggal === today && r.nama === nama);
+  if (alreadySubmitted) {
+    if (!confirm(`⚠️ ${nama} sudah absen hari ini. Tetap kirim lagi?`)) return;
+  }
+  // Lookup NPM and Jurusan for the student
+  const members = getMembers();
+  const student = members.find(m => m.name === name) || {};
+  const npm = student.npm || '';
+  const jurusan = student.jurusan || '';
+
+  const record = {
+    id:        Date.now(),
+    tanggal:   today,
+    waktu:     getTimeStr(),
+    nama,
+    npm,
+    jurusan,
+    status,
+    kegiatan,
+  };
+
+  setLoading(true);
+
+  // Try send to Google Sheets
+  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  let sentToSheet = false;
+
+  if (sheetUrl) {
+    try {
+      const payload = { action: 'addAbsensi', ...record };
+      const resp = await fetch(sheetUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(10000),
+      });
+      const text = await resp.text();
+      sentToSheet = text.includes('success') || resp.ok;
+    } catch {
+      sentToSheet = false;
+    }
+  }
+
+  // Save locally always
+  records.push(record);
+  save(STORAGE_KEYS.records, records);
+
+  if (!sentToSheet && sheetUrl) {
+    // Save to pending
+    const pending = load(STORAGE_KEYS.pending, []);
+    pending.push(record);
+    save(STORAGE_KEYS.pending, pending);
+  }
+
+  setLoading(false);
+
+  // Reset form
+  document.getElementById('absensiForm').reset();
+
+  // Show success
+  const detail = sentToSheet
+    ? `${nama} — ${status}\nData terkirim ke Google Sheets ✅`
+    : sheetUrl
+      ? `${nama} — ${status}\nData tersimpan lokal. Akan dicoba kirim ulang ke Sheets.`
+      : `${nama} — ${status}\nData tersimpan lokal. Hubungkan Google Sheets di Pengaturan.`;
+
+  document.getElementById('successDetail').textContent = detail;
+  document.getElementById('successOverlay').classList.add('show');
+
+  renderPending();
+  renderMembersDropdown();
+}
+
+function setLoading(state) {
+  document.getElementById('submitBtn').disabled = state;
+  document.getElementById('submitSpinner').classList.toggle('show', state);
+  document.getElementById('submitText').textContent = state ? 'Mengirim...' : '🚀 Kirim Absensi';
+}
+
+function hideSuccess() {
+  document.getElementById('successOverlay').classList.remove('show');
+}
+
+// ============================================================
+//  PENDING (OFFLINE QUEUE)
+// ============================================================
+function renderPending() {
+  const pending = load(STORAGE_KEYS.pending, []);
+  const card = document.getElementById('pendingCard');
+  const list = document.getElementById('pendingList');
+
+  if (!pending.length) {
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = 'block';
+  list.innerHTML = pending.map(p => `
+    <div class="member-item" style="margin-bottom:6px;">
+      <div class="member-avatar">${p.nama.charAt(0)}</div>
+      <div style="flex:1;">
+        <div style="font-size:0.85rem; font-weight:600;">${p.nama}</div>
+        <div style="font-size:0.72rem; color:var(--text-muted);">${p.tanggal} ${p.waktu}</div>
+      </div>
+      <span class="pending-badge">⏳ ${p.status}</span>
+    </div>
+  `).join('');
+}
+
+async function retryPending() {
+  const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
+  if (!sheetUrl) { alert('Hubungkan Google Sheets di Pengaturan terlebih dahulu.'); return; }
+
+  const pending = load(STORAGE_KEYS.pending, []);
+  if (!pending.length) { alert('Tidak ada data tertunda.'); return; }
+
+  let successCount = 0;
+  const stillPending = [];
+
+  for (const record of pending) {
+    try {
+      const payload = { action: 'addAbsensi', ...record };
+      const resp = await fetch(sheetUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(10000),
+      });
+      const text = await resp.text();
+      if (text.includes('success') || resp.ok) {
+        successCount++;
+      } else {
+        stillPending.push(record);
+      }
+    } catch {
+      stillPending.push(record);
+    }
+  }
+
+  save(STORAGE_KEYS.pending, stillPending);
+  alert(`✅ ${successCount} data berhasil dikirim. ${stillPending.length} masih tertunda.`);
+  renderPending();
+}
+
+// ============================================================
+//  RECORDS
+// ============================================================
+function getRecords() { return load(STORAGE_KEYS.records, []); }
+
+function getTodayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function getTimeStr() {
+  const d = new Date();
+  return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// ============================================================
+//  STATS
+// ============================================================
+function updateStats() {
+  const records = getRecords();
+  const filterTgl = document.getElementById('filterTanggal').value;
+  const filtered = filterTgl ? records.filter(r => r.tanggal === filterTgl) : records;
+
+  const count = s => filtered.filter(r => r.status === s).length;
+  document.getElementById('statHadir').textContent = count('Hadir');
+  document.getElementById('statIzin').textContent  = count('Izin');
+  document.getElementById('statSakit').textContent = count('Sakit');
+  document.getElementById('statAlpha').textContent = count('Alpha');
+}
+
+// ============================================================
+//  TABLE
+// ============================================================
+function renderTable() {
+  updateStats();
+  const records  = getRecords();
+  const filterTgl = document.getElementById('filterTanggal').value;
+  const filterSts = document.getElementById('filterStatus').value;
+
+  let filtered = [...records].reverse();
+  if (filterTgl) filtered = filtered.filter(r => r.tanggal === filterTgl);
+  if (filterSts) filtered = filtered.filter(r => r.status === filterSts);
+
+  const wrapper = document.getElementById('tableWrapper');
+
+  if (!filtered.length) {
+    wrapper.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <p>Tidak ada data yang cocok dengan filter.</p>
+      </div>`;
+    return;
+  }
+  const members = getMembers();
+  const rows = filtered.map(r => {
+    const cls = r.status.toLowerCase();
+    const icon = { Hadir:'✅', Izin:'📋', Sakit:'🤒', Alpha:'❌' }[r.status] || '';
+    const kegiatan = r.kegiatan ? `<br><small style="color:var(--text-muted);">${r.kegiatan}</small>` : '';
+    
+    // Fallback lookup from members list if record lacks NPM or Jurusan
+    const mObj = members.find(m => m.name === r.nama) || {};
+    const npm = r.npm || mObj.npm || '-';
+    const prodi = r.jurusan || mObj.jurusan || '-';
+
+    return `
+      <tr>
+        <td>${formatTanggal(r.tanggal)}</td>
+        <td>${r.waktu}</td>
+        <td><strong>${r.nama}</strong>${kegiatan}</td>
+        <td>${npm}</td>
+        <td>${prodi}</td>
+        <td><span class="badge badge-${cls}">${icon} ${r.status}</span></td>
+      </tr>`;
+  }).join('');
+
+  wrapper.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Tanggal</th>
+          <th>Waktu</th>
+          <th>Nama</th>
+          <th>NPM</th>
+          <th>Prodi/Jurusan</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function formatTanggal(str) {
+  if (!str) return '-';
+  const [y, m, d] = str.split('-');
+  return `${d} ${BULAN[parseInt(m)-1]} ${y}`;
+}
+
+// ============================================================
+//  EXPORT EXCEL (via SheetJS CDN)
+// ============================================================
+function exportExcel() {
+  const records = getRecords();
+  if (!records.length) { alert('Tidak ada data untuk diekspor.'); return; }
+
+  // Load SheetJS dynamically
+  if (typeof XLSX === 'undefined') {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js';
+    script.onload = () => doExport(records);
+    script.onerror = () => alert('Gagal memuat library Excel. Periksa koneksi internet Anda.');
+    document.head.appendChild(script);
+  } else {
+    doExport(records);
+  }
+}
+
+function doExport(records) {
+  const members = getMembers();
+  const data = records.map(r => {
+    // Fallback lookup from members list if record lacks NPM or Jurusan
+    const mObj = members.find(m => m.name === r.nama) || {};
+    const npm = r.npm || mObj.npm || '';
+    const prodi = r.jurusan || mObj.jurusan || '';
+    
+    return {
+      'Tanggal':  r.tanggal,
+      'Hari':     HARI[new Date(r.tanggal).getDay()],
+      'Waktu':    r.waktu,
+      'Nama':     r.nama,
+      'NPM':      npm,
+      'Prodi':    prodi,
+      'Status':   r.status,
+      'Kegiatan': r.kegiatan || '-',
+    };
+  });
+
+  const ws = XLSX.utils.json_to_sheet(data);
+
+  // Set column widths
+  ws['!cols'] = [
+    {wch:12},{wch:10},{wch:8},{wch:25},{wch:15},{wch:20},{wch:10},{wch:40}
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Absensi KKN');
+
+  const today = getTodayStr();
+  XLSX.writeFile(wb, `Absensi_KKN_Muara_Tembulih_${today}.xlsx`);
+}
+
+// ============================================================
+//  CLEAR DATA
+// ============================================================
+function confirmClearData() {
+  if (!confirm('⚠️ PERINGATAN!\n\nSemua data absensi akan dihapus permanen.\nApakah Anda yakin?')) return;
+  if (!confirm('Konfirmasi sekali lagi: Hapus SEMUA data absensi?')) return;
+  localStorage.removeItem(STORAGE_KEYS.records);
+  localStorage.removeItem(STORAGE_KEYS.pending);
+  renderTable();
+  updateStats();
+  renderPending();
+  alert('✅ Semua data absensi telah dihapus.');
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+renderMembersDropdown();
+renderPending();
+updateAdminBadge();
+
+// Set today's date as default filter
+document.getElementById('filterTanggal').value = getTodayStr();
+
+// Auto-apply today filter on rekap tab
+document.getElementById('tab-rekap').addEventListener('click', () => {
+  document.getElementById('filterTanggal').value = getTodayStr();
+});
+</script>
+  <!-- ===== ADMIN MODAL OVERLAY ===== -->
+  <div class="admin-modal-overlay" id="adminModal">
+    <div class="admin-modal">
+      <div class="admin-lock-icon">🔒</div>
+      <h2>Verifikasi Admin</h2>
+      <p>Masukkan PIN untuk mengakses menu ini</p>
+      <input type="password" class="admin-pass-input" id="adminPassInput" placeholder="••••••" onkeydown="if(event.key==='Enter') verifyAdmin()" />
+      <div class="admin-error-msg" id="adminErrorMsg"></div>
+      <div class="admin-modal-buttons">
+        <button class="btn btn-primary" onclick="verifyAdmin()">Masuk</button>
+        <button class="btn btn-outline" onclick="closeAdminModal()">Batal</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
