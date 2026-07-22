@@ -1552,11 +1552,14 @@ if (document.getElementById('newMemberJurusan')) {
 //  GOOGLE SHEETS URL SETTINGS
 // ============================================================
 function loadSheetSettings() {
-  const defaultUrl = 'https://script.google.com/macros/s/AKfycbx9VoYTl-H_kjPDLoLhDU6agIKfO5Ge9CAna0_PFMPPs3X6n0saK6v3QwUjj4Wh/exec';
-  const url = localStorage.getItem(STORAGE_KEYS.sheetUrl) || defaultUrl;
+  const brokenUrl = 'https://script.google.com/macros/s/AKfycbx9VoYTl-H_kjPDLoLhDU6agIKfO5Ge9CAna0_PFMPPs3X6n0saK6v3QwUjj4Wh/exec';
+  const correctUrl = 'https://script.google.com/macros/s/AKfycbx9VoYVH6wTl-H_kjPDLoLhDU6agIKfO5Ge9CAna0_PFMPPs3X6n0saK6v3QwUjj4Wh/exec';
+  let url = localStorage.getItem(STORAGE_KEYS.sheetUrl);
   
-  if (!localStorage.getItem(STORAGE_KEYS.sheetUrl)) {
-    localStorage.setItem(STORAGE_KEYS.sheetUrl, defaultUrl);
+  // Auto-heal if the user cached the broken URL
+  if (!url || url === brokenUrl) {
+    url = correctUrl;
+    localStorage.setItem(STORAGE_KEYS.sheetUrl, correctUrl);
   }
   
   document.getElementById('sheetUrl').value = url;
