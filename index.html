@@ -1601,13 +1601,17 @@ async function saveSheetUrl() {
       signal: AbortSignal.timeout(8000),
     });
     const text = await resp.text();
-    if (text.includes('pong') || resp.ok) {
+    let resJSON = {};
+    try { resJSON = JSON.parse(text); } catch (e) {}
+
+    if (resJSON.status === 'pong') {
       updateSheetStatus(true, '✅ Koneksi berhasil! URL tersimpan.');
     } else {
-      updateSheetStatus(true, '⚠️ Tersimpan. Respons tidak terduga, cek script Anda.');
+      console.error('Ping failed:', text);
+      updateSheetStatus(false, '⚠️ Tersimpan, namun respons salah. Pastikan URL Apps Script benar.');
     }
   } catch {
-    updateSheetStatus(true, '⚠️ URL tersimpan, namun test koneksi gagal. Coba submit absensi.');
+    updateSheetStatus(false, '⚠️ URL tersimpan, namun test koneksi gagal (Network Error).');
   }
 }
 
@@ -1673,8 +1677,17 @@ async function submitAbsensi(e) {
         signal: AbortSignal.timeout(10000),
       });
       const text = await resp.text();
-      sentToSheet = text.includes('success') || resp.ok;
-    } catch {
+      let resJSON = {};
+      try { resJSON = JSON.parse(text); } catch (e) {}
+      
+      if (resJSON.status === 'success') {
+        sentToSheet = true;
+      } else {
+        sentToSheet = false;
+        console.error('Google Sheets Error:', text);
+        alert('Gagal mengirim ke Google Sheets: ' + (resJSON.message || text));
+      }
+    } catch (err) {
       sentToSheet = false;
     }
   }
@@ -1765,12 +1778,17 @@ async function retryPending() {
         signal: AbortSignal.timeout(10000),
       });
       const text = await resp.text();
-      if (text.includes('success') || resp.ok) {
+      let resJSON = {};
+      try { resJSON = JSON.parse(text); } catch (e) {}
+
+      if (resJSON.status === 'success') {
         successCount++;
       } else {
         stillPending.push(record);
+        console.error('Retry failed:', resJSON.message || text);
+        alert('Gagal mengirim (Retry): ' + (resJSON.message || text));
       }
-    } catch {
+    } catch (err) {
       stillPending.push(record);
     }
   }
