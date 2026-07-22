@@ -1321,7 +1321,11 @@ function showPage(id) {
   document.getElementById('page-' + id).classList.add('active');
   document.getElementById('tab-' + id).classList.add('active');
 
-  if (id === 'rekap') { renderTable(); updateStats(); }
+  if (id === 'rekap') { 
+    renderTable(); 
+    updateStats(); 
+    syncFromSheets(true); // Silent auto-sync
+  }
   if (id === 'pengaturan') { renderMembers(); loadSheetSettings(); }
 }
 
@@ -1873,19 +1877,20 @@ function formatTanggal(str) {
 // ============================================================
 //  SINKRONISASI DATA DARI GOOGLE SHEETS
 // ============================================================
-async function syncFromSheets() {
+async function syncFromSheets(silent = false) {
   const sheetUrl = localStorage.getItem(STORAGE_KEYS.sheetUrl);
   if (!sheetUrl) {
-    alert('Hubungkan Google Sheets di Pengaturan terlebih dahulu.');
+    if (!silent) alert('Hubungkan Google Sheets di Pengaturan terlebih dahulu.');
     return;
   }
 
   const btn = document.getElementById('syncBtn');
   const txt = document.getElementById('syncText');
-  if (!btn || !txt) return;
-
-  btn.disabled = true;
-  txt.textContent = 'Menyinkronkan...';
+  
+  if (btn && txt && !silent) {
+    btn.disabled = true;
+    txt.textContent = 'Menyinkronkan...';
+  }
 
   try {
     const separator = sheetUrl.includes('?') ? '&' : '?';
@@ -1902,15 +1907,17 @@ async function syncFromSheets() {
       updateStats();
       // Also sync members registry
       await syncMembersFromSheets();
-      alert(`✅ Sinkronisasi berhasil! ${data.length} data absensi dimuat dari Google Sheets.`);
+      if (!silent) alert(`✅ Sinkronisasi berhasil! ${data.length} data absensi dimuat dari Google Sheets.`);
     } else {
       throw new Error(data.message || 'Data tidak valid.');
     }
   } catch (err) {
-    alert(`❌ Gagal menyinkronkan data: ${err.message || err.toString()}`);
+    if (!silent) alert(`❌ Gagal menyinkronkan data: ${err.message || err.toString()}`);
   } finally {
-    btn.disabled = false;
-    txt.textContent = 'Sinkronkan';
+    if (btn && txt && !silent) {
+      btn.disabled = false;
+      txt.textContent = 'Sinkronkan';
+    }
   }
 }
 
@@ -1997,6 +2004,13 @@ document.getElementById('filterTanggal').value = getTodayStr();
 document.getElementById('tab-rekap').addEventListener('click', () => {
   document.getElementById('filterTanggal').value = getTodayStr();
 });
+
+// Auto-sync periodically every 15 seconds silently
+setInterval(() => {
+  if (localStorage.getItem(STORAGE_KEYS.sheetUrl)) {
+    syncFromSheets(true);
+  }
+}, 15000);
 </script>
   <!-- ===== ADMIN MODAL OVERLAY ===== -->
   <div class="admin-modal-overlay" id="adminModal">
