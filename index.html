@@ -1012,9 +1012,16 @@ Siti Nurhaliza | 2110102002 | Manajemen
         </div>
       </div>
 
-
-
-
+      <!-- Hapus Data -->
+      <div class="card">
+        <div class="card-title" style="color:var(--danger);">⚠️ Zona Berbahaya</div>
+        <p style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:16px;">
+          Tindakan berikut akan menghapus seluruh data absensi secara permanen di website maupun di Google Sheets.
+        </p>
+        <button class="btn btn-outline" onclick="confirmClearDataCloud()" id="btn-clear-cloud" style="border-color:rgba(255,82,82,0.4); color:var(--danger);">
+          🗑️ Hapus Semua Data Absensi
+        </button>
+      </div>
 
     </section>
   </main>
@@ -1855,6 +1862,45 @@ function doExport(records) {
   XLSX.writeFile(wb, `Absensi_KKN_Muara_Tembulih_${today}.xlsx`);
 }
 
+// ============================================================
+//  CLEAR DATA CLOUD
+// ============================================================
+async function confirmClearDataCloud() {
+  if (!confirm('⚠️ PERINGATAN!\n\nSeluruh data absensi akan dihapus permanen di Google Sheets dan semua HP.\nApakah Anda benar-benar yakin?')) return;
+  if (!confirm('Tindakan ini tidak bisa dibatalkan! Lanjutkan Hapus Semua?')) return;
+
+  const btn = document.getElementById('btn-clear-cloud');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Menghapus dari Google Sheets...';
+
+  try {
+    const payload = { action: 'clearAllRecords' };
+    const resp = await fetch(APP_SHEET_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    const text = await resp.text();
+    let resJSON = {};
+    try { resJSON = JSON.parse(text); } catch(e) {}
+
+    if (resJSON.status === 'success') {
+      localStorage.removeItem(STORAGE_KEYS.records);
+      localStorage.removeItem(STORAGE_KEYS.pending);
+      renderTable();
+      updateStats();
+      renderPending();
+      alert('✅ Berhasil! Semua data absensi di Google Sheets dan web telah dihapus bersih.');
+    } else {
+      alert('❌ Gagal menghapus dari Google Sheets: ' + (resJSON.message || text));
+    }
+  } catch (err) {
+    alert('❌ Terjadi kesalahan jaringan saat mencoba menghapus: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🗑️ Hapus Semua Data Absensi';
+  }
+}
 
 // ============================================================
 //  INIT
